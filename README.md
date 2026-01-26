@@ -30,39 +30,4 @@ Clone the repository:
 ```bash
 git clone https://github.com/anjalisujatha/Tiny_Bert.git
 cd Tiny_Bert
-Install dependencies (recommended to use a virtual environment):
 
-bash
-Copy code
-pip install torch transformers
-💻 Usage
-1. Model Initialization
-You can initialize the BERT model using the configuration defined in bert.py:
-
-python
-Copy code
-from bert import BertModel
-
-# Initialize with custom config or default parameters
-model = BertModel(config)
-2. Running the Sentiment Classifier
-To use the model for sentiment analysis:
-
-bash
-Copy code
-python sentiment_classifier.py
-3. Testing
-To ensure everything is working correctly, run the provided test script:
-
-bash
-Copy code
-python test_bert.py
-📖 How it Works
-Encoder
-The model utilizes a stack of Transformer encoders that process input tokens bidirectionally.
-
-Pooling
-The [CLS] token representation is pooled to provide a fixed-length vector for classification tasks.
-
-Fine-tuning
-The sentiment_classifier.py script adds a linear layer on top of the encoder to categorize text into sentiment classes.
