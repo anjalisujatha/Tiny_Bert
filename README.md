@@ -1,11 +1,11 @@
 # Tiny_Bert
 
-A lightweight implementation of the BERT (Bidirectional Encoder Representations from Transformers) architecture, designed for educational purposes and sentiment analysis tasks. This repository contains a custom BERT model implementation, tools for loading pretrained weights, and a sentiment classifier.
+A lightweight implementation of the [BERT](https://arxiv.org/abs/1810.04805/) (Bidirectional Encoder Representations from Transformers) architecture, designed for educational purposes and sentiment analysis tasks. This repository contains a custom BERT model implementation, tools for loading pretrained weights, and a sentiment classifier.
 
-## 🚀 Features
+##  Features
 
 - **Custom BERT Architecture**  
-  A modular implementation of the BERT model, including multi-head attention and transformer layers.
+  A from-scratch implementation of the BERT model, including multi-head attention and transformer layers.
 
 - **Pretrained Weights Support**  
   Functionality to load and utilize existing BERT weights for transfer learning.
@@ -16,18 +16,53 @@ A lightweight implementation of the BERT (Bidirectional Encoder Representations 
 - **Testing Suite**  
   Scripts to verify the model architecture and performance.
 
-## 📁 Repository Structure
+##  Repository Structure
 
 - `bert.py`: The core architecture of the Tiny BERT model.
 - `pretrained_bert.py`: Handles the loading and mapping of pretrained BERT parameters.
 - `sentiment_classifier.py`: A classifier head and training loop for sentiment analysis tasks.
 - `test_bert.py`: Unit tests and verification scripts for the BERT implementation.
 
-## 🛠️ Installation
+##  Quick Start
 
-Clone the repository:
+Clone the repo, install dependencies, and run a test:
 
 ```bash
 git clone https://github.com/anjalisujatha/Tiny_Bert.git
 cd Tiny_Bert
+pip install torch transformers
+python test_bert.py
+```
 
+## Usage
+1. Model Initialization
+You can initialize the BERT model using the configuration defined in bert.py.
+```
+from bert import BertModel
+
+# Initialize with custom config or default parameters
+model = BertModel(config)
+```
+
+2. Running the Sentiment Classifier
+To use the model for sentiment analysis:
+```
+python sentiment_classifier.py
+```
+
+3. Testing
+To ensure everything is working correctly, run the provided test script:
+```
+python test_bert.py
+```
+
+## How it Works
+
+- **Encoder:**
+  The model utilizes a stack of Transformer encoders that process input tokens bidirectionally.
+
+- **Pooling:**
+  The [CLS] token representation is pooled to provide a fixed-length vector for classification tasks.
+
+- **Fine-tuning:**
+  The sentiment_classifier.py script adds a linear layer on top of the encoder to categorize text into sentiment classes.
