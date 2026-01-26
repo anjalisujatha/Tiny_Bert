@@ -5,7 +5,7 @@ A lightweight implementation of the BERT (Bidirectional Encoder Representations 
 ## 🚀 Features
 
 - **Custom BERT Architecture**  
-  A modular implementation of the BERT model including multi-head attention and transformer layers.
+  A modular implementation of the BERT model, including multi-head attention and transformer layers.
 
 - **Pretrained Weights Support**  
   Functionality to load and utilize existing BERT weights for transfer learning.
