@@ -79,6 +79,10 @@ class SentimentDataset(Dataset):
         self.labels = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
 
         self.tokenizer = tokenizer
+        # "Teach" the tokenizer all words immediately!
+        print("Building vocabulary...")
+        for text in self.texts:
+            self.tokenizer.encode(text)
 
     def __len__(self):
         return len(self.texts)
