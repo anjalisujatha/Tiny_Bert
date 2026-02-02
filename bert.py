@@ -20,6 +20,10 @@ class TinyBERT(nn.Module):
         self.word_embed = nn.Embedding(vocab_size, hidden_size)
         self.position_embed = nn.Embedding(100, hidden_size)
 
+        #  Segment Embeddings
+        # 0 = Sentence A, 1 = Sentence B
+        self.segment_embed = nn.Embedding(2, hidden_size)
+
         # Attention layers (words look at each other)
         self.attention_layers = nn.ModuleList([
             nn.MultiheadAttention(hidden_size, num_heads=2, batch_first=True)
@@ -45,13 +49,23 @@ class TinyBERT(nn.Module):
         total_params = sum(p.numel() for p in self.parameters())
         print(f"  Total parameters: {total_params:,}\n")
 
-    def forward(self, word_ids):
-        """Process the input words"""
-        # Add position information
+    def forward(self, word_ids, segment_ids=None):
+        """
+        Args:
+            word_ids: (Batch, Seq_Len) -> Word indices
+            segment_ids: (Batch, Seq_Len) -> 0 for Sent A, 1 for Sent B
+        """
+        # Handle missing segment_ids (defaults to all 0s/Sentence A)
+        if segment_ids is None:
+            segment_ids = torch.zeros_like(word_ids)
         seq_len = word_ids.size(1)
         positions = torch.arange(seq_len, device=word_ids.device)
 
-        x = self.word_embed(word_ids) + self.position_embed(positions)
+        #  Add Segment Embeddings to the sum
+        # Input representation is sum of Token + Segment + Position
+        x = self.word_embed(word_ids) + \
+            self.position_embed(positions) + \
+            self.segment_embed(segment_ids)
 
         # Process through each layer
         for i, (attn, ffn) in enumerate(zip(self.attention_layers, self.ffn_layers)):
