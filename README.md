@@ -95,6 +95,8 @@ The plot shows how the model learns to separate positive, negative, and mixed re
 - **Blue** — Negative reviews form a separate cluster
 - **Green** — Mixed/ambiguous reviews scatter between the two clusters, reflecting genuine sentiment uncertainty
 
+![embedding_visualization.png](outputs/embedding_visualization.png)
+
 ```
 python -m tasks.sentiment           # Train and save the encoder
 python -m visualization.embeddings  # Visualize embeddings

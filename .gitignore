@@ -9,6 +9,3 @@ __pycache__/
 # IDE
 .idea/
 .claude/
-
-# Generated outputs (model weights, visualizations)
-outputs/
