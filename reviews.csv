@@ -1,0 +1,51 @@
+text,label,category
+this movie is amazing and wonderful,1,positive
+absolutely loved it great acting,1,positive
+fantastic storyline brilliant performance,1,positive
+enjoyed it thoroughly highly recommend,1,positive
+masterpiece one of the best films,1,positive
+incredible movie with outstanding performances,1,positive
+loved the story and the characters,1,positive
+a beautiful film with great direction,1,positive
+superb acting and a wonderful script,1,positive
+one of the greatest movies ever made,1,positive
+the film was excellent and very entertaining,1,positive
+a truly inspiring and uplifting movie,1,positive
+remarkable film with stunning visuals,1,positive
+amazing cast and a gripping story,1,positive
+this was a delightful and fun movie,1,positive
+heartwarming story with perfect acting,1,positive
+the best movie of the year,1,positive
+an outstanding film from start to finish,1,positive
+loved every moment of this movie,1,positive
+brilliant direction and superb writing,1,positive
+terrible film waste of time,0,negative
+boring and predictable bad movie,0,negative
+worst movie ever very disappointed,0,negative
+awful terrible horrible experience,0,negative
+disaster poorly written badly acted,0,negative
+the movie was dull and uninteresting,0,negative
+a complete waste of money and time,0,negative
+horrible acting and a weak plot,0,negative
+the worst film of the year,0,negative
+disappointing movie with bad direction,0,negative
+painful to watch and very boring,0,negative
+the story made no sense at all,0,negative
+a terrible movie with no redeeming value,0,negative
+ugly and poorly made film,0,negative
+this movie was a total disaster,0,negative
+the acting was stiff and unconvincing,0,negative
+worst experience at the movies ever,0,negative
+a dreadful and tiresome film,0,negative
+hated every minute of this movie,0,negative
+poor script and lazy direction,0,negative
+the acting was great but the story was weak,2,mixed
+good visuals but the plot was disappointing,2,mixed
+it was an okay movie nothing special,2,mixed
+not bad but not great either,2,mixed
+some good moments but overall mediocre,2,mixed
+decent film with a few boring parts,2,mixed
+the movie had potential but fell flat,2,mixed
+started strong but the ending was weak,2,mixed
+average movie with moments of brilliance,2,mixed
+entertaining but forgettable experience,2,mixed
