@@ -67,10 +67,16 @@ class TinyBERT(nn.Module):
             self.position_embed(positions) + \
             self.segment_embed(segment_ids)
 
+        # List to store attention maps
+        self.attention_maps = []
+
         # Process through each layer
         for i, (attn, ffn) in enumerate(zip(self.attention_layers, self.ffn_layers)):
             # Attention step
-            attn_out, _ = attn(x, x, x)
+            attn_out, attn_weights = attn(x, x, x)
+
+            self.attention_maps.append(attn_weights.detach())
+
             x = self.norms[i * 2](x + attn_out)
 
             # Feed-forward step
