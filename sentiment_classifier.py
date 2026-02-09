@@ -3,6 +3,7 @@ Real sentiment analysis using Tiny BERT
 Classifies movie reviews as positive or negative
 """
 
+import csv
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
@@ -28,15 +29,16 @@ class SimpleTokenizer:
             self.id_to_word[self.next_id] = word
             self.next_id += 1
 
-    def encode(self, text, max_length=10):
+    def encode(self, text, max_length=10, add_new_words=True):
         """Convert text to word IDs"""
         words = text.lower().split()
 
-        # Add words to vocabulary
-        for word in words:
-            self.add_word(word)
+        # Add words to vocabulary only during training
+        if add_new_words:
+            for word in words:
+                self.add_word(word)
 
-        # Convert to IDs
+        # Convert to IDs (unknown words map to [UNK] = 1)
         ids = [self.word_to_id.get(word, 1) for word in words]
 
         # Pad or truncate
@@ -60,26 +62,19 @@ class SimpleTokenizer:
 class SentimentDataset(Dataset):
     """Movie review dataset"""
 
-    def __init__(self, tokenizer):
-        # Sample movie reviews
-        self.texts = [
-            "this movie is amazing and wonderful",
-            "terrible film waste of time",
-            "absolutely loved it great acting",
-            "boring and predictable bad movie",
-            "fantastic storyline brilliant performance",
-            "worst movie ever very disappointed",
-            "enjoyed it thoroughly highly recommend",
-            "awful terrible horrible experience",
-            "masterpiece one of the best films",
-            "disaster poorly written badly acted",
-        ]
-
-        # Labels: 1 = Positive, 0 = Negative
-        self.labels = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+    def __init__(self, tokenizer, csv_path="reviews.csv"):
+        # Load reviews from CSV (only positive and negative for training)
+        self.texts = []
+        self.labels = []
+        with open(csv_path, newline='') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row['category'] in ('positive', 'negative'):
+                    self.texts.append(row['text'])
+                    self.labels.append(int(row['label']))
 
         self.tokenizer = tokenizer
-        # "Teach" the tokenizer all words immediately!
+        # "Teach" the tokenizer all words
         print("Building vocabulary...")
         for text in self.texts:
             self.tokenizer.encode(text)
@@ -160,7 +155,7 @@ def predict_sentiment(model, tokenizer, text):
     model.eval()
 
     # Tokenize
-    word_ids = torch.tensor([tokenizer.encode(text)])
+    word_ids = torch.tensor([tokenizer.encode(text, add_new_words=False)])
 
     # Predict
     with torch.no_grad():
@@ -202,7 +197,11 @@ def main():
     # 4. Train
     train_model(model, train_loader, num_epochs=20)
 
-    # 5. Test on new reviews
+    # 5. Save the trained BERT encoder for visualization
+    torch.save(bert.state_dict(), "trained_bert.pt")
+    print("\nSaved trained BERT encoder to 'trained_bert.pt'")
+
+    # 6. Test on new reviews
     print("\n" + "=" * 60)
     print("TESTING ON NEW REVIEWS")
     print("=" * 60 + "\n")

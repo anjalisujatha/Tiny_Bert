@@ -17,6 +17,7 @@ This repository implements the core BERT architecture and applies it to four dis
 * `nsp_task.py`: Next Sentence Prediction task (`TinyBERTNSP`) with valid/fake sentence pair generation.
 * `multitask_model.py`: A unified Multitask Model Architecture (`MultitaskTinyBERT`).
 * `train_multitask.py`: Script to train the multitask model.
+* `visualize_embeddings.py`: t-SNE visualization of fine-tuned [CLS] token embeddings.
 
 ##  Installation
 
@@ -51,7 +52,23 @@ Run the unified model that handles multiple tasks simultaneously.
 python train_multitask.py
 ```
 
-## References
+## Embedding Visualization
+
+After fine-tuning the TinyBERT encoder on the sentiment classification task, we extract [CLS] token embeddings and project them to 2D using t-SNE. The plot shows how the model learns to separate positive, negative, and mixed reviews in embedding space.
+
+![Embedding Visualization](embedding_visualization.png)
+
+- **Red** — Positive reviews cluster tightly together
+- **Blue** — Negative reviews form a separate cluster
+- **Green** — Mixed/ambiguous reviews scatter between the two clusters, reflecting genuine sentiment uncertainty
+
+To generate the visualization:
+```
+python sentiment_classifier.py   # Train and save the encoder
+python visualize_embeddings.py   # Visualize embeddings
+```
+
+##  References
 
 This implementation is based on the concepts introduced in the original BERT paper:
 * **BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding** (Devlin et al., 2018).

@@ -14,7 +14,7 @@ class TinyBERTNSP(nn.Module):
         super().__init__()
         self.bert = bert
         # Binary Classifier: IsNext (1) vs NotNext (0)
-        # We use the [CLS] token representation C for NSP [cite: 147]
+        # We use the [CLS] token representation C for NSP
         self.nsp_classifier = nn.Linear(bert.word_embed.embedding_dim, 2)
 
     def forward(self, word_ids, segment_ids):
@@ -74,7 +74,7 @@ class NSPDataset(Dataset):
         SEP = self.tokenizer.word_to_id["[SEP]"]
 
         # 2. Construct Word IDs sequence
-        # Paper format: [CLS] Sentence A [SEP] Sentence B [SEP] [cite: 122, 123]
+        # Paper format: [CLS] Sentence A [SEP] Sentence B [SEP]
         word_ids = [CLS] + ids_a + [SEP] + ids_b + [SEP]
 
         # 3. Construct Segment IDs (0 for A, 1 for B)
