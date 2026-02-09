@@ -2,8 +2,7 @@ import torch
 import torch.nn as nn
 import random
 from torch.utils.data import Dataset, DataLoader
-from bert import TinyBERT
-from sentiment_classifier import SimpleTokenizer
+from tiny_bert import TinyBERT, SimpleTokenizer
 
 
 # ==========================================

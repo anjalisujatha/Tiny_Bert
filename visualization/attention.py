@@ -5,8 +5,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.manifold import TSNE
-from bert import TinyBERT
-from sentiment_classifier import SimpleTokenizer
+from tiny_bert import TinyBERT, SimpleTokenizer
+
+# Resolve paths relative to project root
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_DATA_DIR = os.path.join(_PROJECT_ROOT, "data")
+_OUTPUT_DIR = os.path.join(_PROJECT_ROOT, "outputs")
 
 
 # Words the model learned as positive/negative from training
@@ -69,7 +73,8 @@ def visualize_attention(bert_model, tokenizer, text, layer=0):
 def run_visualization():
     # Load training texts to rebuild vocabulary
     training_texts = []
-    with open("reviews.csv", newline="") as f:
+    csv_path = os.path.join(_DATA_DIR, "reviews.csv")
+    with open(csv_path, newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
             if row["category"] in ("positive", "negative"):
@@ -81,13 +86,14 @@ def run_visualization():
 
     # Load the fine-tuned BERT encoder
     bert_model = TinyBERT(vocab_size=len(tokenizer.word_to_id), hidden_size=32, num_layers=2)
-    bert_model.load_state_dict(torch.load("trained_bert.pt", weights_only=True))
+    model_path = os.path.join(_OUTPUT_DIR, "trained_bert.pt")
+    bert_model.load_state_dict(torch.load(model_path, weights_only=True))
     bert_model.eval()
-    print("Loaded fine-tuned BERT encoder from 'trained_bert.pt'")
+    print(f"Loaded fine-tuned BERT encoder from '{model_path}'")
 
     sentence = "the movie was amazing and brilliant"
 
-    output_dir = "attention_maps"
+    output_dir = os.path.join(_OUTPUT_DIR, "attention_maps")
     os.makedirs(output_dir, exist_ok=True)
 
     # Attention heatmaps for both layers
@@ -179,8 +185,6 @@ def run_visualization():
     plt.savefig(cosine_path, dpi=150)
     print(f"Saved: {cosine_path}")
     plt.close()
-
-
 
 
 if __name__ == "__main__":

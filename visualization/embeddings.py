@@ -1,11 +1,16 @@
+import os
 import csv
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.manifold import TSNE
-from bert import TinyBERT
-from sentiment_classifier import SimpleTokenizer
+from tiny_bert import TinyBERT, SimpleTokenizer
+
+# Resolve paths relative to project root
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_DATA_DIR = os.path.join(_PROJECT_ROOT, "data")
+_OUTPUT_DIR = os.path.join(_PROJECT_ROOT, "outputs")
 
 
 def run_visualization():
@@ -13,7 +18,8 @@ def run_visualization():
     sample_texts = []
     labels = []
     training_texts = []
-    with open("reviews.csv", newline='') as f:
+    csv_path = os.path.join(_DATA_DIR, "reviews.csv")
+    with open(csv_path, newline='') as f:
         reader = csv.DictReader(f)
         for row in reader:
             sample_texts.append(row['text'])
@@ -29,9 +35,10 @@ def run_visualization():
 
     # Load the fine-tuned TinyBERT encoder
     bert_model = TinyBERT(vocab_size=len(tokenizer.word_to_id), hidden_size=32, num_layers=2)
-    bert_model.load_state_dict(torch.load("trained_bert.pt", weights_only=True))
+    model_path = os.path.join(_OUTPUT_DIR, "trained_bert.pt")
+    bert_model.load_state_dict(torch.load(model_path, weights_only=True))
     bert_model.eval()
-    print("Loaded fine-tuned BERT encoder from 'trained_bert.pt'")
+    print(f"Loaded fine-tuned BERT encoder from '{model_path}'")
 
     # 3. Extraction: Get the [CLS] (thought vector) for each review
     embeddings = []
@@ -87,8 +94,10 @@ def run_visualization():
     plt.legend(handles=legend_elements, loc='best')
 
     plt.tight_layout()
-    plt.savefig("embedding_visualization.png", dpi=150)
-    print("Saved plot to 'embedding_visualization.png'")
+    os.makedirs(_OUTPUT_DIR, exist_ok=True)
+    save_path = os.path.join(_OUTPUT_DIR, "embedding_visualization.png")
+    plt.savefig(save_path, dpi=150)
+    print(f"Saved plot to '{save_path}'")
     plt.show()
 
 

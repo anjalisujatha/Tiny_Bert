@@ -3,66 +3,29 @@ Real sentiment analysis using Tiny BERT
 Classifies movie reviews as positive or negative
 """
 
+import os
 import csv
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
-from bert import TinyBERT, TinyBERTClassifier
+from tiny_bert import TinyBERT, TinyBERTClassifier, SimpleTokenizer
+
+# Resolve paths relative to project root
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_DATA_DIR = os.path.join(_PROJECT_ROOT, "data")
+_OUTPUT_DIR = os.path.join(_PROJECT_ROOT, "outputs")
 
 
 # ============================================
-# 1. CREATE SIMPLE TOKENIZER
-# ============================================
-
-class SimpleTokenizer:
-    """Convert words to numbers"""
-
-    def __init__(self):
-        self.word_to_id = {"[PAD]": 0, "[UNK]": 1}
-        self.id_to_word = {0: "[PAD]", 1: "[UNK]"}
-        self.next_id = 2
-
-    def add_word(self, word):
-        """Add a new word to vocabulary"""
-        if word not in self.word_to_id:
-            self.word_to_id[word] = self.next_id
-            self.id_to_word[self.next_id] = word
-            self.next_id += 1
-
-    def encode(self, text, max_length=10, add_new_words=True):
-        """Convert text to word IDs"""
-        words = text.lower().split()
-
-        # Add words to vocabulary only during training
-        if add_new_words:
-            for word in words:
-                self.add_word(word)
-
-        # Convert to IDs (unknown words map to [UNK] = 1)
-        ids = [self.word_to_id.get(word, 1) for word in words]
-
-        # Pad or truncate
-        if len(ids) < max_length:
-            ids += [0] * (max_length - len(ids))
-        else:
-            ids = ids[:max_length]
-
-        return ids
-
-    def decode(self, ids):
-        """Convert IDs back to text"""
-        words = [self.id_to_word.get(id, "[UNK]") for id in ids if id != 0]
-        return " ".join(words)
-
-
-# ============================================
-# 2. CREATE DATASET
+# 1. CREATE DATASET
 # ============================================
 
 class SentimentDataset(Dataset):
     """Movie review dataset"""
 
-    def __init__(self, tokenizer, csv_path="reviews.csv"):
+    def __init__(self, tokenizer, csv_path=None):
+        if csv_path is None:
+            csv_path = os.path.join(_DATA_DIR, "reviews.csv")
         # Load reviews from CSV (only positive and negative for training)
         self.texts = []
         self.labels = []
@@ -97,7 +60,7 @@ class SentimentDataset(Dataset):
 
 
 # ============================================
-# 3. TRAINING FUNCTION
+# 2. TRAINING FUNCTION
 # ============================================
 
 def train_model(model, train_loader, num_epochs=10):
@@ -146,7 +109,7 @@ def train_model(model, train_loader, num_epochs=10):
 
 
 # ============================================
-# 4. PREDICTION FUNCTION
+# 3. PREDICTION FUNCTION
 # ============================================
 
 def predict_sentiment(model, tokenizer, text):
@@ -170,7 +133,7 @@ def predict_sentiment(model, tokenizer, text):
 
 
 # ============================================
-# 5. MAIN PROGRAM
+# 4. MAIN PROGRAM
 # ============================================
 
 def main():
@@ -198,8 +161,10 @@ def main():
     train_model(model, train_loader, num_epochs=20)
 
     # 5. Save the trained BERT encoder for visualization
-    torch.save(bert.state_dict(), "trained_bert.pt")
-    print("\nSaved trained BERT encoder to 'trained_bert.pt'")
+    os.makedirs(_OUTPUT_DIR, exist_ok=True)
+    save_path = os.path.join(_OUTPUT_DIR, "trained_bert.pt")
+    torch.save(bert.state_dict(), save_path)
+    print(f"\nSaved trained BERT encoder to '{save_path}'")
 
     # 6. Test on new reviews
     print("\n" + "=" * 60)

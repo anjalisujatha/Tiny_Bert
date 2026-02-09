@@ -9,64 +9,103 @@ This repository implements the core BERT architecture and applies it to four dis
 3.  **Next Sentence Prediction (NSP):** A pre-training objective that predicts if two sentences are sequentially connected.
 4.  **Multitask Learning:** A unified model that shares the BERT encoder across multiple tasks (Sentiment + Paraphrase).
 
-## File Structure
+## Project Structure
 
-* `bert.py`: The core `TinyBERT` model implementation. Supports Token, Position, and Segment embeddings.
-* `sentiment_classifier.py`: Implementation of a Movie Review sentiment classifier using a `SimpleTokenizer`.
-* `ner_task.py`: Named Entity Recognition model (`TinyBERTNER`) and training loop.
-* `nsp_task.py`: Next Sentence Prediction task (`TinyBERTNSP`) with valid/fake sentence pair generation.
-* `multitask_model.py`: A unified Multitask Model Architecture (`MultitaskTinyBERT`).
-* `train_multitask.py`: Script to train the multitask model.
-* `visualize_embeddings.py`: t-SNE visualization of fine-tuned [CLS] token embeddings.
+```
+Tiny_Bert/
+├── tiny_bert/                  # Core package
+│   ├── __init__.py             # Re-exports TinyBERT, TinyBERTClassifier, SimpleTokenizer
+│   ├── model.py                # TinyBERT and TinyBERTClassifier
+│   └── tokenizer.py            # SimpleTokenizer
+│
+├── tasks/                      # NLP task scripts
+│   ├── sentiment.py            # Movie review sentiment classifier
+│   ├── ner.py                  # Named Entity Recognition
+│   ├── nsp.py                  # Next Sentence Prediction
+│   └── multitask.py            # Multitask model (Sentiment + Paraphrase)
+│
+├── visualization/              # Visualization scripts
+│   ├── embeddings.py           # t-SNE of [CLS] token embeddings
+│   └── attention.py            # Attention heatmaps and semantic space
+│
+├── examples/
+│   └── pretrained_bert.py      # Standalone HuggingFace BERT demo
+│
+├── tests/
+│   └── test_model.py           # Model configuration and shape tests
+│
+├── data/
+│   └── reviews.csv             # Movie review dataset
+│
+└── outputs/                    # Generated artifacts (gitignored)
+    ├── trained_bert.pt
+    ├── embedding_visualization.png
+    └── attention_maps/
+```
 
 ##  Installation
 
-The only major dependency is PyTorch.
 ```
-pip install torch
+pip install -r requirements.txt
 ```
 
 ##  Usage
 
+All scripts are run as modules from the project root directory.
+
 ### 1. Sentiment Analysis
 Train a model to classify movie reviews as Positive or Negative.
 ```
-python sentiment_classifier.py
+python -m tasks.sentiment
 ```
 
 ### 2. Named Entity Recognition (NER)
-Train a model to identify names and locations in text (e.g., "John" -> \`B-PER\`, "Paris" -> \`B-LOC\`).
+Train a model to identify names and locations in text (e.g., "John" -> `B-PER`, "Paris" -> `B-LOC`).
 ```
-python ner_task.py
+python -m tasks.ner
 ```
 
 ### 3. Next Sentence Prediction (NSP)
 Train the model to understand the relationship between two sentences (Is Sentence B the true successor of Sentence A?).
 ```
-python nsp_task.py
+python -m tasks.nsp
 ```
 
 ### 4. Multitask Learning
 Run the unified model that handles multiple tasks simultaneously.
 ```
-python train_multitask.py
+python -m tasks.multitask
 ```
 
-## Embedding Visualization
+### 5. Tests
+Run model tests to verify different configurations, batch sizes, and sequence lengths.
+```
+python -m tests.test_model
+```
 
-After fine-tuning the TinyBERT encoder on the sentiment classification task, we extract [CLS] token embeddings and project them to 2D using t-SNE. The plot shows how the model learns to separate positive, negative, and mixed reviews in embedding space.
+## Visualization
 
-![Embedding Visualization](embedding_visualization.png)
+After fine-tuning the TinyBERT encoder on the sentiment classification task, you can visualize the learned representations.
+
+### Embedding Visualization
+Extract [CLS] token embeddings and project them to 2D using t-SNE. 
+The plot shows how the model learns to separate positive, negative, and mixed reviews in embedding space.
 
 - **Red** — Positive reviews cluster tightly together
 - **Blue** — Negative reviews form a separate cluster
 - **Green** — Mixed/ambiguous reviews scatter between the two clusters, reflecting genuine sentiment uncertainty
 
-To generate the visualization:
 ```
-python sentiment_classifier.py   # Train and save the encoder
-python visualize_embeddings.py   # Visualize embeddings
+python -m tasks.sentiment           # Train and save the encoder
+python -m visualization.embeddings  # Visualize embeddings
 ```
+
+### Attention Maps
+Visualize attention heatmaps, semantic space, and cosine similarity:
+```
+python -m visualization.attention
+```
+
 
 ##  References
 

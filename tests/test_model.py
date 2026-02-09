@@ -1,5 +1,5 @@
 import torch
-from bert import TinyBERT, TinyBERTClassifier
+from tiny_bert import TinyBERT, TinyBERTClassifier
 
 
 def test_different_sizes():

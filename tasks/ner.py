@@ -1,9 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
-from bert import TinyBERT
-# Import the tokenizer from your existing sentiment file
-from sentiment_classifier import SimpleTokenizer
+from tiny_bert import TinyBERT, SimpleTokenizer
 
 
 # ==========================================
