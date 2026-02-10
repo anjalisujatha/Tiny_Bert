@@ -108,6 +108,11 @@ Visualize attention heatmaps, semantic space, and cosine similarity:
 python -m visualization.attention
 ```
 
+The plot visualize how the model understands language:
+- **Grammar**: Function words like *`the`* and *`was`* are clustered tightly together
+- **Sentiment**: amazing (positive) and terrible (negative) are pushed to opposite ends
+
+![semantic_space.png](outputs/attention_maps/semantic_space.png)
 
 ##  References
 
